@@ -27,3 +27,10 @@ Auth::routes();
 //guest manager
 Route::get('/home',[GuestManagerController::class, 'index'])->name('home');
 
+
+Route::get('/order',[GuestManagerController::class, 'order'])->name('order');
+Route::post('/orderevent',[GuestManagerController::class, 'orderEvent'])->name('orderevent');
+Route::get('/orderlist',[GuestManagerController::class, 'orderList'])->name('orderlist');
+
+Route::get('/charga',[GuestManagerController::class, 'cHarga'])->name('charga');
+
