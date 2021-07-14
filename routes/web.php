@@ -32,5 +32,8 @@ Route::get('/order',[GuestManagerController::class, 'order'])->name('order');
 Route::post('/orderevent',[GuestManagerController::class, 'orderEvent'])->name('orderevent');
 Route::get('/orderlist',[GuestManagerController::class, 'orderList'])->name('orderlist');
 
+Route::post('/tambahtamu',[GuestManagerController::class, 'tambahTamu'])->name('tambahtamu');
+Route::post('/deletetamu',[GuestManagerController::class, 'deleteTamu'])->name('deletetamu');
+
 Route::get('/charga',[GuestManagerController::class, 'cHarga'])->name('charga');
 

@@ -7,6 +7,8 @@ use App\Models\detail_event;
 use App\Models\paket_event;
 use App\Models\permintaan_event;
 use App\Models\status_event;
+use App\Models\event;
+use App\Models\tamu;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -87,11 +89,61 @@ class GuestManagerController extends Controller
     }
 
     public function orderList(Request $request){
-        $data = permintaan_event::where('id_user_request',Auth::user()->id)->get();
+        if($request->id){
+            $event = event::where("id_permintaan_event",$request->id)->first();
+            if($event){
+
+                $idListTamu = $event->list_tamu->id;
+                $tamu = $event->list_tamu->tamu;
+                $paket_event= $event->permintaan_event->detail_event->id_paket_event;
+                $idtamu = $request->id;
+              
+                return view('guestmanager/listtamu',compact(['event','tamu','paket_event','idListTamu','idtamu']));
+            }
+            $data = permintaan_event::where('id_user_request',Auth::user()->id)->get();
         // dd($data->status_event->status);
 
 
         return view('guestmanager/orderlist',compact("data"));
+        }else{
+        $data = permintaan_event::where('id_user_request',Auth::user()->id)->get();
+        // dd($data->status_event->status);
+
+
+        return view('guestmanager/orderlist',compact("data"));}
     }
   
+
+    public function tambahTamu(Request $request){
+        if($request->ajax()){
+            $data = [
+                "id_list_tamu"=>$request->id,
+                "nama" => $request->nama,
+                'noWA' =>$request->wa,
+                'company'=>$request->company,
+                'status_wa'=>0,
+                'status_kehadiran' =>0,
+                'status_tamu'=> 0
+            ];
+            $add = tamu::create($data);
+
+            if($add){
+                $kata = 'sukses';
+                echo json_encode($kata);
+            }else{
+                $kata = 'gagal';
+                echo json_encode($kata);
+            }
+             
+            
+        }
+    }
+
+    public function deleteTamu(Request $request){
+        $data = tamu::where('id',$request->id)->delete();
+        if($data){
+            return redirect()->to('/orderlist?id='.$request->page);
+        }
+        dd("gagal");
+    }
 }

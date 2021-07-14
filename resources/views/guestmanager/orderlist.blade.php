@@ -26,9 +26,16 @@
                                     <td scope="row"> {{$b->lokasi}}</td>                            
                                     <td scope="row"> {{$b->tanggal_request}}</td>                            
                                     <td scope="row"> {{$b->tanggal_event}}</td>                            
-                                
+
+                                    @if($b->id_status == 1 || $b->id_status == 3)
+                                        <td> 
+                                        <a href="#" id="{{$b->id}}" class='btn btn-dark w-50'>{{$b->status_event->status}}</a>             
+                                        </td>
+                                    @else 
                                     <td> 
-                                        <a href="#" id="{{$b->id}}" class='btn btn-dark' data-bs-toggle="modal" data-bs-target="#exampleModal">{{$b->status_event->status}}</a>                           
+                                        <a href="{{route('orderlist',['id'=>$b->id])}}" id="{{$b->id}}" class='btn btn-dark w-50'>{{$b->status_event->status}}</a>             
+                                        </td>
+                                    @endif              
                                     </tr>
 
                                     <?php $i = $i+1 ?>

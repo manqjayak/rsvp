@@ -26,4 +26,8 @@ class permintaan_event extends Model
         return $this->hasOne(status_event::class, 'id', 'id_status');
     }
 
+    public function detail_event(){
+        return $this->hasOne(daftar_event::class,'id','id_event');
+    }
+
 }
