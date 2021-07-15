@@ -14,4 +14,9 @@ class daftar_event extends Model
     public function detail_event(){
         return $this->hasOne(detail_event::class,'id', 'id_detail_event');
     }
+
+    public function paket_event(){
+        return $this->hasOne(paket_event::class,'id', 'id_paket_event');
+    }
+
 }

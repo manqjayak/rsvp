@@ -23,7 +23,10 @@ class GuestManagerController extends Controller
             if (Gate::allows('gm')){
                 
                 return $next($request);
-            } else {
+            } else if(Gate::allows("admin")){
+                return response()->redirectTo('/admin');
+            }
+            else {
                 return redirect('/');
             }
         });
@@ -145,5 +148,21 @@ class GuestManagerController extends Controller
             return redirect()->to('/orderlist?id='.$request->page);
         }
         dd("gagal");
+    }
+
+
+    //edit pesan WA
+    public function editPesan(Request $request){
+
+        if($request->ajax()){
+            $pesan = $request->pesan;
+            $id = $request->id;
+            $data=event::where('id',$id)->update(['pesan'=>$pesan]);
+
+            if($data){
+
+                echo json_encode("berhasil");
+            }
+        }
     }
 }

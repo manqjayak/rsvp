@@ -2,6 +2,16 @@
 
 @section('title','List Tamu')
 
+
+@section("css")
+<style>
+/* textarea.form-control {
+  height: 1000px;
+} */
+
+</style>
+@endsection
+
 @section('content')
 
 @if($paket_event == 2)
@@ -11,7 +21,9 @@
 @endif
 <button type="button" class="btn btn-secondary">+ Excel</button>
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+ Manual</button>
-<div class="container" id='listorder'>
+<div class="container" id='listorderr'>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editpesanWA">pesan WA</button>
+<div class="container" id='listorder' name="{{$event->id}}">
     <div class="table-responsive table-sm ">
                             <table class="table table-hover mt-1 " id= 'tableprint' name="{{$idListTamu}}">
                                 <thead class="thead-light">
@@ -99,6 +111,27 @@
     </div>
   </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="editpesanWA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">pesanWA</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <div class="form-floating">
+            <textarea id='valueWA'class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 500px">{{$event->pesan}}</textarea >
+            <label for="floatingTextarea2"></label>
+            </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="epWA" class="btn btn-primary" >Tambah</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
 
 @endsection
@@ -129,7 +162,7 @@
 
 
 @section('js')
-@if($paket_event == 2)
+
 <script >
 $(document).ready(function(){
     // hapus, event disini untuk mendapatkan isi dari sesuatu yang di klik
@@ -154,7 +187,7 @@ $(document).ready(function(){
     })
 
 // tambah tamu
-//ajax
+//ajax 
 $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -178,48 +211,78 @@ function tambahTamu(id, nama, wa, company){
             }
     })
 }
+// end
+// ajax edit pesan WA
+function editPesan(id,pesan){
+    $.ajax({
+        method: "post",
+            url: "{{route('editpesan')}}",
+            dataType: 'json',
+            data: {
+                id:id,
+                pesan:pesan
+            },
+            success:function(data){
+                location.reload();
+                console.log(data)
+               
+            }
+    })
+}
+// end
 
-//klik
-$(document).on('click','#tambahtamu',function(){
-    let nama = $('#nama').val()
-    let wa = $('#nowa').val()
-    let company = $('#company').val()
-    let id = $('#tableprint').attr('name')
-    if(nama == ""){
-        $('#nama').addClass('is-invalid')
-        $(document).on('click','#nama',function(){
-            $(this).removeClass("is-invalid")
-        })
-    }
-    if(wa == ""){
-        $('#nowa').addClass('is-invalid')
-        $(document).on('click','#nowa',function(){
-            $(this).removeClass("is-invalid")
-        })
-    }
-    if(company == ""){
-        $('#company').addClass('is-invalid')
-        $(document).on('click','#company',function(){
-            $(this).removeClass("is-invalid")
-        })
-    }
+    //klik tambah
+    $(document).on('click','#tambahtamu',function(){
+        let nama = $('#nama').val()
+        let wa = $('#nowa').val()
+        let company = $('#company').val()
+        let id = $('#tableprint').attr('name')
+        if(nama == ""){
+            $('#nama').addClass('is-invalid')
+            $(document).on('click','#nama',function(){
+                $(this).removeClass("is-invalid")
+            })
+        }
+        if(wa == ""){
+            $('#nowa').addClass('is-invalid')
+            $(document).on('click','#nowa',function(){
+                $(this).removeClass("is-invalid")
+            })
+        }
+        if(company == ""){
+            $('#company').addClass('is-invalid')
+            $(document).on('click','#company',function(){
+                $(this).removeClass("is-invalid")
+            })
+        }
 
-    if(nama != "" && wa != "" && company != "" ){
+        if(nama != "" && wa != "" && company != "" ){
 
-        $('#staticBackdrop').modal('toggle')
-        tambahTamu(id, nama, wa, company)
-    }
-    // $(this).attr('data-bs-dismiss','modal')
+            $('#staticBackdrop').modal('toggle')
+            tambahTamu(id, nama, wa, company)
+        }
+        // $(this).attr('data-bs-dismiss','modal')
 
-// data-dismiss="modal"
-    console.log(nama, wa, company, id)
-})
+    // data-dismiss="modal"
+        console.log(nama, wa, company, id)
+    })
+    // end
+
+    // klik edit pesan
+    $(document).on('click','#epWA',function(){
+        let id = $("#listorder").attr("name")
+        let pesan = $('#valueWA').val()
+
+        editPesan(id,pesan)
+         $(this).attr('data-bs-dismiss','modal')
+        console.log(id,pesan)
+    })
 
 
 })
 
 
 </script>
-@endif
+
 
 @endsection

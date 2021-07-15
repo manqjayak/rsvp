@@ -34,6 +34,16 @@ Route::get('/orderlist',[GuestManagerController::class, 'orderList'])->name('ord
 
 Route::post('/tambahtamu',[GuestManagerController::class, 'tambahTamu'])->name('tambahtamu');
 Route::post('/deletetamu',[GuestManagerController::class, 'deleteTamu'])->name('deletetamu');
+// edit pesan WA
+Route::post('/editpesan',[GuestManagerController::class, 'editPesan'])->name('editpesan');
 
 Route::get('/charga',[GuestManagerController::class, 'cHarga'])->name('charga');
+
+
+// admin
+Route::get('/admin',[AdminController::class, 'index']);
+Route::get('/admin/requested',[AdminController::class, 'requestEvent'])->name('requestevent');
+
+Route::post('/admin/tolakrequest',[AdminController::class, 'tolakRequest'])->name('tolakrequest');
+Route::post('/admin/terimarequest',[AdminController::class, 'terimaRequest'])->name('terimarequest');
 
