@@ -43,6 +43,15 @@ Route::get('/charga',[GuestManagerController::class, 'cHarga'])->name('charga');
 // admin
 Route::get('/admin',[AdminController::class, 'index']);
 Route::get('/admin/requested',[AdminController::class, 'requestEvent'])->name('requestevent');
+Route::get('/admin/mguestmanager',[AdminController::class, 'mGuestManager'])->name('mguestmanager');
+Route::get('/admin/mdaftarevent',[AdminController::class, 'mDaftarEvent'])->name('mdaftarevent');
+
+Route::post('/admin/dguestmanager',[AdminController::class, 'dGuestManager'])->name('dguestmanager');
+
+Route::post('/admin/detailgm',[AdminController::class, 'detailGM'])->name('dGM');
+Route::post('/admin/editgm',[AdminController::class, 'editGM'])->name('editGM');
+Route::post('/admin/getrsvp',[AdminController::class, 'getRSVP'])->name('gRSVP');
+Route::post('/admin/editrsvp',[AdminController::class, 'editRSVP'])->name('eRSVP');
 
 Route::post('/admin/tolakrequest',[AdminController::class, 'tolakRequest'])->name('tolakrequest');
 Route::post('/admin/terimarequest',[AdminController::class, 'terimaRequest'])->name('terimarequest');

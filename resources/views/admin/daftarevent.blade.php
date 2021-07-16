@@ -1,7 +1,7 @@
 
 @extends('admin.templates')
 
-@section('title','request')
+@section('title','lsi event')
 
 @section('notification')
  <!-- logic notification -->
@@ -35,27 +35,52 @@
                                 <tr>
                                 
                                     <th scope="col">Nama</th>
-                                    <th scope="col">Harga</th>
+                                    <th scope="col">tanggal</th>
+                                    <th scope="col">status</th>
+                                    <th scope="col">LINK RSVP</th>
                                   
                                 </tr>
                             </thead>
                             <tbody>
 
-                                @foreach ($event as $b)
+                                @foreach ($ievent as $b)
                             
-                                <tr>                                                    
-                                <td scope="row">{{$b->user->nama}} memesan event yaitu {{$b->daftar_event->detail_event->nama_event}} dengan paket {{$b->daftar_event->paket_event->nama_event}} yang dilakukan pada @php echo date('l, d F Y', strtotime($b->tanggal_event)) @endphp di {{$b->lokasi}}</td>                            
+                            <tr>                                                <td scope="row"> {{$b->permintaan_event->user->nama}}  </td> 
+                               <td scope="row"> {{$b->permintaan_event->tanggal_event}}  </td> 
+                               <td scope="row"> {{$b->status_event->status}}  </td> 
+                                                        
                                            
                                 <td> 
-                                    <a href="#" name="{{$b->id}}" id="tolakE" class='btn btn-danger' >tolak</a>    
-                                    <a href="#" id="terimaE" name="{{$b->id}}"  class='btn btn-success'>terima</a>    
+                                  
+                                <button type="button" name="{{$b->id}}" id="lRSVP" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editpesanWA">lihat</button>  
                                 </td>                       
-                                </tr>
+                            </tr>
                                 @endforeach
                             </tbody>
                         </table>
         
         </div>
+<!-- Modal -->
+<div class="modal fade" id="editpesanWA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">LINK RSVP</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+                <div class="input-group mb-2 mr-sm-2">
+                
+                <input type="text" class="form-control" id="isiLinkRSVP" placeholder="">
+                <div class="input-group-prepend">
+                <div class="input-group-text" id='editURL'>edit</div>
+                </div>
+            </div>
+      
+      
+    </div>
+  </div>
+</div>
 
 @endsection
 
@@ -63,30 +88,34 @@
 
     <script>
         $(document).ready(function(){
-           // tolak
+          
            $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 })
-            function tolakR(id){
+ // lihat link rsvp
+            function linkRSVP(id){
                 $.ajax({
                     method : "post",
-                    url: "{{route('tolakrequest')}}",
+                    url: "{{route('gRSVP')}}",
                     dataType: "json",
                     data:{id:id},
                     success: function(data){
-                        location.reload();
-                        console.log(data)
+                        $('#isiLinkRSVP').val(data.url)
+                        $('#editURL').attr("name",data.id)
+                        // console.log(data)
                     }
                 })
             }
-            function terimaR(id){
+ // edit link rsvp
+            function editRSVP(id,url){
                 $.ajax({
                     method : "post",
-                    url: "{{route('terimarequest')}}",
+                    url: "{{route('eRSVP')}}",
                     dataType: "json",
-                    data:{id:id},
+                    data:{id:id,
+                    url:url},
                     success: function(data){
                         location.reload();
                         console.log(data)
@@ -94,17 +123,20 @@
                 })
             }
 
-            $(document).on('click','#tolakE',function(){
+
+            // lihat link
+            $(document).on('click','#lRSVP',function(){
                 let id = $(this).attr('name')
                 // console.log(id)
-                tolakR(id)
+                linkRSVP(id)
             })
 
-            // terima
-            $(document).on('click','#terimaE',function(){
+            // edit link
+            $(document).on('click','#editURL',function(){
                 let id = $(this).attr('name')
+                let url = $('#isiLinkRSVP').val()
                 // console.log(id)
-                terimaR(id)
+                editRSVP(id,url)
             })
         
         })

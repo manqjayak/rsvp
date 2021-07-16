@@ -21,4 +21,8 @@ class event extends Model
     public function permintaan_event(){
         return $this->belongsTo(permintaan_event::class, 'id_permintaan_event','id');
     }
+
+    public function status_event(){
+        return $this->hasOne(status_event::class,'id','id_status_event');
+    }
 }

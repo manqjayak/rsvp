@@ -28,7 +28,12 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
                 @yield('notification')
-
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{route('mguestmanager')}}">Guest Manager</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{route('mdaftarevent')}}">Daftar Event</a>
+                </li>
                 <li class="nav-item">
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
