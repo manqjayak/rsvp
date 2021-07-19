@@ -8,7 +8,7 @@
  @if(!$event->isEmpty())
                 <li class="nav-item">
                 <button type="button" id='krequest' class="btn btn-primary position-relative" >
-                    Request Event
+                <a href="{{route('requestevent')}}">Request Event</a>
              
                 <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
                     <span class="visually-hidden">New alerts</span>
@@ -17,7 +17,7 @@
                 </button>
                 @else
                 <button type="button" class="btn btn-primary position-relative"   disabled>
-                    Request Event
+                <a href="{{route('requestevent')}}">Request Event</a>
                  
                 </button>
               

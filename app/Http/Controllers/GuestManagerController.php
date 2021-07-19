@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 
+use App\Imports\TamuImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class GuestManagerController extends Controller
 {
@@ -165,4 +168,23 @@ class GuestManagerController extends Controller
             }
         }
     }
+
+    public function fimportExcel(Request $request){
+       
+      
+        if($request->ajax()){
+            $data = $request->excel;
+            
+            
+            $file = $request->file('file');
+         
+            $nama_file = rand().$file->getClientOriginalName();
+            $id = $request->id;
+            $file->move('tamu',$nama_file);
+            
+            Excel::import(new TamuImport, public_path('/tamu/'.$nama_file));
+            echo json_encode(public_path('/tamu/'.$nama_file));
+        }
+    }
+
 }

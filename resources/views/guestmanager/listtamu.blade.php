@@ -19,7 +19,11 @@
 <a  class="btn btn-primary" data-toggle="modal" id ='copyurl' data-target="#exampleModalCenter" name="{{$event->url}}">Dapatkan Link</a>
 
 @endif
-<button type="button" class="btn btn-secondary">+ Excel</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+<input id="signup-token" name="_token" type="hidden" value="{{csrf_token()}}">
+
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+ Manual</button>
 <div class="container" id='listorderr'>
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editpesanWA">pesan WA</button>
@@ -112,7 +116,7 @@
   </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="editpesanWA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="editpesanWA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -131,8 +135,60 @@
       
     </div>
   </div>
+</div> -->
+
+<!-- Modal exce -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      
+          <div class="mb-3">
+              <label for="formFile" class="form-label">Default file input example</label>
+              <input class="form-control" name='file' required type="file" id="formFile">
+            </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="bimportexcel" class="btn btn-primary" >Import</button>
+      </div>
+      
+    </div>
+  </div>
 </div>
 
+
+			<!-- <div class="modal-dialog" role="document">
+				<form method="post" action="/siswa/import_excel" enctype="multipart/form-data">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Import Excel</h5>
+						</div>
+						<div class="modal-body">
+ 
+							{{ csrf_field() }}
+ 
+							<label>Pilih file excel</label>
+							<div class="form-group">
+								<input type="file" name="file" required="required">
+							</div>
+ 
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary">Import</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div> -->
 
 @endsection
 
@@ -211,6 +267,29 @@ function tambahTamu(id, nama, wa, company){
             }
     })
 }
+// import excel tamu
+function fImportTamu(id, excel){
+    var form_data = new FormData();
+    var file_data =$('#formFile').prop('files')[0];
+    form_data.append('file', file_data);
+    form_data.append('id',id)
+
+    console.log(form_data)
+    $.ajax({
+        method: "post",
+             url: "{{route('fimportexcel')}}",
+             cache: false,
+             processData: false,
+            data: form_data,
+          
+            contentType: false,
+            success:function(data){
+                location.reload();
+                console.log(data)
+               
+            }
+    })
+}
 // end
 // ajax edit pesan WA
 function editPesan(id,pesan){
@@ -276,6 +355,16 @@ function editPesan(id,pesan){
         editPesan(id,pesan)
          $(this).attr('data-bs-dismiss','modal')
         console.log(id,pesan)
+    })
+    // klik import excel
+    $(document).on('click','#bimportexcel',function(){
+        let id = $("#listorder").attr("name")
+        let file = $('#formFile').val()
+      console.log("oke")
+        // editPesan(id,pesan)
+        //  $(this).attr('data-bs-dismiss','modal')
+        fImportTamu(id, file)
+        // console.log(id,file)
     })
 
 

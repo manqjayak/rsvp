@@ -54,6 +54,8 @@ class AdminController extends Controller
         }
     }
 
+ 
+
     public function mGuestManager(Request $request){
         $data = User::where('id_role',2)->get();
         $rEvent = permintaan_event::where('id_status',1)->get();
@@ -100,4 +102,6 @@ class AdminController extends Controller
             echo json_encode($data);
         }
     }
+
+ 
 }

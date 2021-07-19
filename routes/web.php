@@ -34,6 +34,7 @@ Route::get('/orderlist',[GuestManagerController::class, 'orderList'])->name('ord
 
 Route::post('/tambahtamu',[GuestManagerController::class, 'tambahTamu'])->name('tambahtamu');
 Route::post('/deletetamu',[GuestManagerController::class, 'deleteTamu'])->name('deletetamu');
+Route::post('/importtamu',[GuestManagerController::class, 'fimportExcel'])->name('fimportexcel');
 // edit pesan WA
 Route::post('/editpesan',[GuestManagerController::class, 'editPesan'])->name('editpesan');
 
