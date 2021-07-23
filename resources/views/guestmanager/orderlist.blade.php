@@ -33,7 +33,7 @@
                                         </td>
                                     @else 
                                     <td> 
-                                        <a href="{{route('orderlist',['id'=>$b->id])}}" id="{{$b->id}}" class='btn btn-dark w-50'>{{$b->status_event->status}}</a>             
+                                        <a href="{{route('orderlist',['id'=>$b->id])}}" id="{{$b->id}}" class='btn btn-dark w-50'>{{$b->status_permintaan->status}}</a>             
                                         </td>
                                     @endif              
                                     </tr>

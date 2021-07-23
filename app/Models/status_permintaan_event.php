@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class status_permintaan_event extends Model
 {
     use HasFactory;
-    protected $table = "status_permintaan_tamu";
+    protected $table = "status_permintaan_event";
 }

@@ -23,15 +23,15 @@ class permintaan_event extends Model
 
 
     public function status_event(){
-        return $this->hasOne(status_event::class, 'id', 'id_status');
+        return $this->hasOne(status_permintaan_event::class, 'id', 'id_status');
     }
-    public function status_permintaan_event(){
+    public function status_permintaan(){
         return $this->hasOne(status_permintaan_event::class, 'id', 'id_status');
     }
 
-    public function detail_event(){
-        return $this->hasOne(daftar_event::class,'id','id_event');
-    }
+    // public function detail_event(){
+    //     return $this->hasOne(daftar_event::class,'id','id_event');
+    // }
 
 
     public function daftar_event(){

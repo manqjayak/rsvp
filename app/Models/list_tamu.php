@@ -17,4 +17,8 @@ class list_tamu extends Model
     public function tamu(){
         return $this->hasMany(tamu::class, "id_list_tamu","id");
     }
+
+    public function event(){
+        return $this->belongsTo(event::class, 'id_event','id');
+    }
 }

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\permintaan_event;
 use App\Models\User;
 use App\Models\event;
+use App\Models\list_tamu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class AdminController extends Controller
@@ -49,8 +51,37 @@ class AdminController extends Controller
     }
     public function terimaRequest(Request $request){
         if($request->ajax()){
-            $data = permintaan_event::where('id',$request->id)->update(['id_status'=>2]); 
-            echo json_encode("oke");
+            // insert event baru
+            $data = permintaan_event::where('id',$request->id)->first();
+            $harga = $data->daftar_event->harga;
+            $isi = [
+          'id_permintaan_event' => intval($data->id),
+                'id_status_event' => intval(1),
+                'pesan' => 'Selamat Pagi
+                Ini Merupakan Link:
+                TerimaKasih',
+                'url' => " ",
+                'total_harga' => $harga
+            ];
+            // don't know why this code won't work (beacuse array to string )
+            // $event = DB::table('event')->insertGetId([
+            //     $isi
+            // ]);
+            $event =DB::table('event')
+            ->insertGetId([
+                'id_permintaan_event' => intval($data->id),
+                'id_status_event' => intval(1),
+                'pesan' => 'Selamat Pagi
+                Ini Merupakan Link:
+                TerimaKasih',
+                'url' => " ",
+                'total_harga' => $harga
+            ]);
+     
+            // $event=event::create([$isi]);
+            DB::table('list_tamu')->insert(['id_event'=>$event]);
+            $edit = $data->update(['id_status'=>2]); 
+            echo json_encode($event);
         }
     }
 

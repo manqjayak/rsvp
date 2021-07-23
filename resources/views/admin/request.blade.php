@@ -81,6 +81,7 @@
                     }
                 })
             }
+            // terima
             function terimaR(id){
                 $.ajax({
                     method : "post",
@@ -90,6 +91,9 @@
                     success: function(data){
                         location.reload();
                         console.log(data)
+                    },
+                    error:function(request, status, error){
+                        console.log(request.responseText)
                     }
                 })
             }

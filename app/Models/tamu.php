@@ -17,6 +17,7 @@ class tamu extends Model
         "nama",
         "noWA",
         "company",
+        "pesan",
         "status_wa",
         "status_kehadiran",
         "status_tamu"

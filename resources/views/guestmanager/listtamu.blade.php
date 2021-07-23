@@ -14,19 +14,37 @@
 
 @section('content')
 
-@if($paket_event == 2)
+
+<h1 class="display-3">ID LIST TAMU:<span> {{$idListTamu}}</span></h1>
+@if($status_event != 3)
+@if($paket_event == 1)
 
 <a  class="btn btn-primary" data-toggle="modal" id ='copyurl' data-target="#exampleModalCenter" name="{{$event->url}}">Dapatkan Link</a>
 
 @endif
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Launch demo modal
+
+<button type="button" class="btn btn-primary" id='bExel' >
+  +Excel
 </button>
 <input id="signup-token" name="_token" type="hidden" value="{{csrf_token()}}">
 
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+ Manual</button>
 <div class="container" id='listorderr'>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editpesanWA">pesan WA</button>
+<button type="button" id="beditPesan" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editpesanWA">pesan WA</button>
+
+<div class="container" id='tempatExcel'>
+
+</div>
+<div class="container" >
+<div class="row">
+<div class="col-6" id="tempatTanggal"><h3>Tanggal:</h3> <h3 id="tanggalE">@php echo date('d-m-Y', $tanggal); @endphp</h3></div>
+
+<div class="col-6"> <h1><button type="button" id="cancelE" class="btn btn-danger" >Batal</button></h1></div>
+
+</div>
+</div>
+@endif
+
 <div class="container" id='listorder' name="{{$event->id}}">
     <div class="table-responsive table-sm ">
                             <table class="table table-hover mt-1 " id= 'tableprint' name="{{$idListTamu}}">
@@ -53,8 +71,15 @@
 
                                    
                                         <td> 
-                                        <a href="#" id="{{$b->id}}" class='btn btn-dark w-25' name="{{$b->id}}">kirim WA</a>   
-                                                  
+                                        @if($status_event != 3 && $paket_event != 1)
+                                        <a href="#" id="{{$b->id}}" name1='{{$b->id}}' name2='{{$paket_event}}'  name3='{{$detail_event}}
+                                        ' name4 = '{{$idListTamu}}'class='btn btn-dark w-25' name="{{$b->id}}">kirim WA</a>   
+                                        @endif    
+                                        @if($b->status_kehadiran ==0)
+                                        <span>Tidak Hadir</span>
+                                        @else 
+                                        <span>Hadir</span>
+                                        @endif
                                         <a href="{{route('deletetamu')}}" id ="hapusTamu" name="{{$b->id}}" class='btn btn-dark w-25 m-1'  onclick="event.preventDefault();
                                         $('#idhTamu').val('{{$b->id}}');
                                         $('#pageTamu').val('{{$idtamu}}');
@@ -116,11 +141,11 @@
   </div>
 </div>
 <!-- Modal -->
-<!-- <div class="modal fade" id="editpesanWA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="editpesanWA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">pesanWA</h5>
+        <h5 class="modal-title" id="pesanEdit">pesanWA</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -135,10 +160,10 @@
       
     </div>
   </div>
-</div> -->
+</div>
 
 <!-- Modal exce -->
-
+<!-- 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 <div class="modal-dialog">
     <div class="modal-content">
@@ -152,7 +177,7 @@
               <label for="formFile" class="form-label">Default file input example</label>
               <input class="form-control" name='file' required type="file" id="formFile">
             </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+    
         </form>
       </div>
       <div class="modal-footer">
@@ -163,7 +188,7 @@
     </div>
   </div>
 </div>
-
+ -->
 
 			<!-- <div class="modal-dialog" role="document">
 				<form method="post" action="/siswa/import_excel" enctype="multipart/form-data">
@@ -240,6 +265,7 @@ $(document).ready(function(){
         $temp.val(url).select()
         document.execCommand("copy")
         $temp.remove()
+        alert("LINK SUDAH TERCOPY")
     })
 
 // tambah tamu
@@ -262,8 +288,7 @@ function tambahTamu(id, nama, wa, company){
             },
             success:function(data){
                 location.reload();
-                console.log(data)
-               
+                console.log(data)               
             }
     })
 }
@@ -274,7 +299,6 @@ function fImportTamu(id, excel){
     form_data.append('file', file_data);
     form_data.append('id',id)
 
-    console.log(form_data)
     $.ajax({
         method: "post",
              url: "{{route('fimportexcel')}}",
@@ -284,12 +308,27 @@ function fImportTamu(id, excel){
           
             contentType: false,
             success:function(data){
+              // data menggunakan integer karena jika menggunakan boolean atau string menjadi error
+              if(data == 1){
                 location.reload();
-                console.log(data)
-               
+              }else{
+                alert("Format excel Salah");
+              }
+                          // if (data == 'true')console.log(data);location.reload();
+              // else alert("Format excel Salah");
+           
+              // if(data == true){
+
+              //   console.log("ini true")
+              // }else{
+              //   console.log("ini false")
+              // }
+           
             }
     })
 }
+
+// end
 // end
 // ajax edit pesan WA
 function editPesan(id,pesan){
@@ -356,15 +395,152 @@ function editPesan(id,pesan){
          $(this).attr('data-bs-dismiss','modal')
         console.log(id,pesan)
     })
+
+    // tambah excel
+    $(document).on('click','#bExel',function(){
+        $('#tempatExcel').html(`
+        <h1 class="display4">template excel:</h1>
+        <table class="table table-hover mt-1 " id= 'tableprint' >
+                                <thead class="thead-light">
+                                    <tr>
+                                    
+                                        <th scope="col">No</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">No WA</th>
+                                        <th scope="col">Company</th>
+                                        <th scope="col">ID List Tamu</th>
+
+                                    </tr>
+                                </thead>
+                                <table>
+
+        <div class="modal-body">
+      
+      <div class="mb-3">
+          <label for="formFile" class="form-label">Default file input example</label>
+          <input class="form-control" name='file' required type="file" id="formFile">
+        </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" id="closeExcel">Close</button>
+    <button type="button" id="bimportexcel" class="btn btn-primary" >Import</button>
+  </div>
+  `)
+    })
+    // close excel
+    $(document).on('click','#closeExcel',function(){
+      $('#tempatExcel').html(``)
+    })
+
+    // end
     // klik import excel
     $(document).on('click','#bimportexcel',function(){
         let id = $("#listorder").attr("name")
         let file = $('#formFile').val()
-      console.log("oke")
+        if(file!=""){
+
+           fImportTamu(id, file)
+        }else{
+          alert("File Kosong");
+        }
         // editPesan(id,pesan)
         //  $(this).attr('data-bs-dismiss','modal')
-        fImportTamu(id, file)
+       
         // console.log(id,file)
+    })
+
+    // edit tanggal
+    $(document).on('click','#tanggalE',function(){
+      
+      // let date = Date.parse($(this).text())/1000
+      let date = $(this).text()
+      let value = date.split("-")
+      
+      let kata = `
+      <div class="mb-3">
+    <label for="tanggal" class="form-label">Tanggal: </label>
+        <input  type="date" id="tanggal"  name='tanggal' value="`+value[2]+`-`+value[1]+`-`+value[0]+`" class="form-control datepicker "required>
+    </div>
+      `   
+      $(this).parent().html(kata)
+
+    })
+    // ajax simpan edit tanggal
+    function editTanggal(tanggal, id){
+      $.ajax({
+        method: "post",
+            url: "{{route('edittanggal')}}",
+            dataType: 'json',
+            data: {
+                id:id,
+                tanggal:tanggal
+            },
+            success:function(data){
+                // location.reload();
+                let value = data.split("-")
+                $('#tempatTanggal').html(`
+                <h3>Tanggal:</h3> <h3 id="tanggalE">
+                `+value[2]+`-`+value[1]+`-`+value[0]+`</h3>
+                `)
+                
+                // console.log(data)
+               
+            }
+      })
+      // end
+    }
+    // simpat edit tanggal
+    $(document).on('focusout','#tanggal',function(){
+      value = $(this).val()
+      let cfmr = confirm("Ubah tanggal?")
+      if(cfmr){
+
+        editTanggal(value,"{{$idListTamu}}" )
+      }else{
+        $('#tempatTanggal').html(
+        `<h3>Tanggal:</h3> <h3 id="tanggalE">@php echo date('d-m-Y', $tanggal); @endphp</h3>`)
+      }
+    })
+// ajax cancel event
+function cancelEvent(id){
+      $.ajax({
+        method: "post",
+            url: "{{route('cancelevent')}}",
+            dataType: 'json',
+            data: {
+                id:id,
+
+            },
+            success:function(data){
+              window.location.replace("{{route('orderlist')}}");
+               
+            }
+      })
+       }
+      // end
+    // cancel event
+    $(document).on('click','#cancelE',function(){
+      console.log("oke")
+      let cfmr = confirm("Cancel Event?")
+      if(cfmr){
+        cancelEvent("{{$idListTamu}}")
+
+      }
+    })
+
+    // cek link untuk send whatsapp
+    $(document).on('click','a',function(){
+      
+      let tamu = $(this).attr('name1')
+      let paket = $(this).attr('name2')
+      let detail = $(this).attr('name3')
+      let id = $(this).attr('name4')
+      console.log("id List Tamu:"+id)
+      console.log("id Tamu:"+tamu)
+      console.log("Paket :"+paket)
+      console.log("Detail:"+detail)
     })
 
 

@@ -37,6 +37,10 @@ Route::post('/deletetamu',[GuestManagerController::class, 'deleteTamu'])->name('
 Route::post('/importtamu',[GuestManagerController::class, 'fimportExcel'])->name('fimportexcel');
 // edit pesan WA
 Route::post('/editpesan',[GuestManagerController::class, 'editPesan'])->name('editpesan');
+// edit tanggal
+Route::post('/edittanggal',[GuestManagerController::class, 'editTanggal'])->name('edittanggal');
+// cancel event
+Route::post('/cancelevent',[GuestManagerController::class, 'cancelEvent'])->name('cancelevent');
 
 Route::get('/charga',[GuestManagerController::class, 'cHarga'])->name('charga');
 
@@ -57,3 +61,9 @@ Route::post('/admin/editrsvp',[AdminController::class, 'editRSVP'])->name('eRSVP
 Route::post('/admin/tolakrequest',[AdminController::class, 'tolakRequest'])->name('tolakrequest');
 Route::post('/admin/terimarequest',[AdminController::class, 'terimaRequest'])->name('terimarequest');
 
+// rsvp
+// paket standar
+Route::get('/rsvp/{detail}/{id}',[Rsvp::class, 'index'])->name('rsvp');
+// paket dedicated
+Route::get('/rsvp/{detail}/{paket}/{id}/{tamu}',[Rsvp::class, 'index1'])->name('rsvp1');
+Route::post('/rsvp/tambahtamu',[Rsvp::class, 'tambahTamu'])->name('tambahtamursvp');

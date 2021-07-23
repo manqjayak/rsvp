@@ -11,8 +11,17 @@ class event extends Model
 
     protected $table = "event";
     public $timestamps = false;
+    public $autoincrementing = true;
+    protected $primaryKey = 'id';
+    
 
-    protected $fillable = ["id_permintaan_event", "id_status_event", "total_harga"];
+    protected $fillable = [
+        "id_permintaan_event",
+     "id_status_event",
+      "pesan",
+      "url",
+      "total_harga"
+    ];
 
     public function list_tamu(){
         return $this->hasOne(list_tamu::class,"id_event", "id");

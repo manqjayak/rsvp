@@ -7,6 +7,7 @@ use App\Models\detail_event;
 use App\Models\paket_event;
 use App\Models\permintaan_event;
 use App\Models\status_event;
+use App\Models\list_tamu;
 use App\Models\event;
 use App\Models\tamu;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 
 use App\Imports\TamuImport;
+use App\Models\status_permintaan_event;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -98,23 +100,33 @@ class GuestManagerController extends Controller
         if($request->id){
             $event = event::where("id_permintaan_event",$request->id)->first();
             if($event){
-
+                // status event
+                $status_event= $event->id_status_event;
+                // mendapatkan id_list_tamu
                 $idListTamu = $event->list_tamu->id;
+                // mendapatkan data tamu-tamu
                 $tamu = $event->list_tamu->tamu;
-                $paket_event= $event->permintaan_event->detail_event->id_paket_event;
+                //mendapatkan paket_event
+                $paket_event= $event->permintaan_event->daftar_event->id_paket_event;
                 $idtamu = $request->id;
-              
-                return view('guestmanager/listtamu',compact(['event','tamu','paket_event','idListTamu','idtamu']));
+                //mendapatkan detail_event
+                $detail_event=$event->permintaan_event->daftar_event->id_detail_event;
+                // dd($paket_event);
+
+                $tanggal = strtotime($event->permintaan_event->tanggal_event);
+                
+                return view('guestmanager/listtamu',compact(['event','tamu','paket_event','idListTamu','idtamu','tanggal','status_event','detail_event']));
             }
             $data = permintaan_event::where('id_user_request',Auth::user()->id)->get();
         // dd($data->status_event->status);
 
-
+        
         return view('guestmanager/orderlist',compact("data"));
         }else{
         $data = permintaan_event::where('id_user_request',Auth::user()->id)->get();
-        // dd($data->status_event->status);
-
+   
+        // dd($data->first()->status_event);
+        // dd($data->first()->status_permintaan);
 
         return view('guestmanager/orderlist',compact("data"));}
     }
@@ -168,6 +180,36 @@ class GuestManagerController extends Controller
             }
         }
     }
+    //edit tanggal
+    public function editTanggal(Request $request){
+
+        if($request->ajax()){
+            $tanggal= $request->tanggal;
+            $id = $request->id;
+            $data = list_tamu::where('id',$id)->first()->event->permintaan_event->update(["tanggal_event"=>$tanggal]);
+         
+
+            if($data){
+
+                echo json_encode($tanggal);
+            }
+        }
+    }
+    // cancel event
+    public function cancelEvent(Request $request){
+        if($request->ajax()){
+            $id = $request->id;
+            $data = list_tamu::where('id',$id)->first()->event->permintaan_event->update(["id_status"=>4]);
+            $data1 = list_tamu::where('id',$id)->first()->event->update(['id_status_event'=>3]);
+
+            echo json_encode($data);
+            // $data = permintaan_event::where('id_user_request',Auth::user()->id)->get();
+            // return view('guestmanager/orderlist',compact("data"));
+
+        }
+    }
+    
+
 
     public function fimportExcel(Request $request){
        
@@ -177,14 +219,47 @@ class GuestManagerController extends Controller
             
             
             $file = $request->file('file');
-         
-            $nama_file = rand().$file->getClientOriginalName();
-            $id = $request->id;
-            $file->move('tamu',$nama_file);
+          
+            // $nama_file = rand().$file->getClientOriginalName();
+            // $id = $request->id;
+            // $file->move('tamu',$nama_file);
+
+            $import = new TamuImport;
             
-            Excel::import(new TamuImport, public_path('/tamu/'.$nama_file));
-            echo json_encode(public_path('/tamu/'.$nama_file));
+            // $column = $import->column($file);
+            $import->import($file);
+            // if($import->failures()->isNotEmpty()){
+            //     echo json_encode("not oke");
+            // }
+                if($import->column()==true){
+                    echo json_encode(1);
+                }else{
+                    echo json_encode(2);
+                }
+     
+            // Excel::import($import, public_path('/tamu/'.$nama_file));
+
+            // $import = new TamuImport;
+            // // $import->import(public_path('/tamu/'.$nama_file));
+            // $data = $import->print();
+            // $data=Excel::import(new TamuImport, public_path('/tamu/'.$nama_file),function($reader) use (&$data){
+            //     foreach ($reader->toArray() as $row) {
+            //         if($row){
+            //             $data[] = 'oke';
+            //         } else {
+            //             $data[] = 'error';
+            //         }
+            //     }
+            // });
+            // if($data){
+
+              
+            // }else{
+                // echo json_encode($file);
+            // }
+            
         }
     }
+
 
 }
